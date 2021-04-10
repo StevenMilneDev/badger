@@ -31,7 +31,9 @@ The template below contains the badger configuration section. The section contai
 ```
 ---
 ## 🦡 Badger
-This section will be removed and replaced with generated badges. Add your description below this section. Optionally fill in the fields below to have badges generated. ***Note: It may take a few minutes after saving before this section is replaced.***
+This section will be removed and replaced with generated badges. Add your description below
+this section. Optionally fill in the fields below to have badges generated. ***Note: It may
+take a few minutes after saving before this section is replaced.***
 
 Trello Card: 
 Trello URL: 
