@@ -1,5 +1,5 @@
 import { getInput, setOutput } from '@actions/core'
-import github from '@actions/github'
+import { getOctokit, context } from '@actions/github'
 // import Badge from './util/badge'
 
 // const inputs: Badge[] = []
@@ -14,4 +14,4 @@ for (let i = 1; i <= 10; i++) {
   }
 }
 
-console.log(JSON.stringify(github))
+console.log('Context:', JSON.stringify(context))
