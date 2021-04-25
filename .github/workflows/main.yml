@@ -1,0 +1,14 @@
+on: 
+  pull_request:
+    types: [opened]
+
+jobs:
+  add-badges:
+    runs-on: ubuntu-latest
+    name: Adds badges to the PR description
+    steps:
+    - name: Add badges
+      id: badger
+      uses: StevenMilneDev/badger@0.1.0
+      with:
+        badge-01: 'Message: Hello World!'
