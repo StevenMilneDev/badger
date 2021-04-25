@@ -5,7 +5,7 @@ import * as github from './util/github'
 
 if (context.eventName !== github.Event.PULL_REQUEST) {
   error(`Badger does not support ${context.eventName} actions.`)
-} else if (context.action !== github.PullRequestAction.OPENED) {
+} else if (context.payload.action !== github.PullRequestAction.OPENED) {
   warning(`Skipping Badger, cannot handle ${context.action} events.`)
 } else {
   const body = context.payload.pull_request.body
@@ -21,5 +21,5 @@ if (context.eventName !== github.Event.PULL_REQUEST) {
   }
 
   console.log(`Badges: ${JSON.stringify(badges)}`)
-  console.log(`Body:\n${body}`)
+  console.log(`Body:\n${body}\n\ns`)
 }
