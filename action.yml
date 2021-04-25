@@ -1,0 +1,36 @@
+name: 'Badger'
+description: 'Add customised badges to pull requests.'
+inputs:
+  badge-01:
+    description: 'Configuration for a badge'
+    required: true
+  badge-02:
+    description: 'Configuration for a badge'
+    required: false
+  badge-03:
+    description: 'Configuration for a badge'
+    required: false
+  badge-04:
+    description: 'Configuration for a badge'
+    required: false
+  badge-05:
+    description: 'Configuration for a badge'
+    required: false
+  badge-06:
+    description: 'Configuration for a badge'
+    required: false
+  badge-07:
+    description: 'Configuration for a badge'
+    required: false
+  badge-08:
+    description: 'Configuration for a badge'
+    required: false
+  badge-09:
+    description: 'Configuration for a badge'
+    required: false
+  badge-10:
+    description: 'Configuration for a badge'
+    required: false
+runs:
+  using: 'node12'
+  main: 'bin/index.js'

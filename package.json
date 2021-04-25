@@ -1,0 +1,35 @@
+{
+  "name": "badger",
+  "version": "1.0.0",
+  "description": "A GitHub action to add customised badges to pull requests.",
+  "main": "index.js",
+  "scripts": {
+    "build": "ncc build src/index.ts --out bin --license licenses.txt",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/StevenMilneDev/badger.git"
+  },
+  "keywords": [
+    "github",
+    "action",
+    "badge",
+    "shield"
+  ],
+  "author": "Steven <stevenimilne@outlook.com> (https://smilne.dev/)",
+  "license": "UNLICENSED",
+  "bugs": {
+    "url": "https://github.com/StevenMilneDev/badger/issues"
+  },
+  "homepage": "https://github.com/StevenMilneDev/badger#readme",
+  "dependencies": {
+    "@actions/core": "^1.2.6",
+    "@actions/github": "^4.0.0"
+  },
+  "devDependencies": {
+    "@vercel/ncc": "^0.28.2",
+    "typescript": "^4.2.4",
+    "webpack": "^5.35.1"
+  }
+}
