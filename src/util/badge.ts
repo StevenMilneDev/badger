@@ -86,7 +86,7 @@ export default class Badge {
     }
 
     if (this.options.logo) {
-      config.options.icon = this.options.logo
+      config.options.logo = this.options.logo
     }
 
     if (this.options.colour || this.options.color) {
