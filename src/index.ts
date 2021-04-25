@@ -3,10 +3,14 @@ import { getOctokit, context } from '@actions/github'
 import * as github from './util/github'
 import Badge from './util/badge'
 
+const token = getInput('token')
+
 if (context.eventName !== github.Event.PULL_REQUEST) {
   error(`Badger does not support '${context.eventName}' actions.`)
 } else if (context.payload.action !== github.PullRequestAction.OPENED) {
   warning(`Skipping Badger, cannot handle '${context.action}' events.`)
+} else if (!token) {
+  error(`Authentication token not provided.`)
 } else {
   const body = context.payload.pull_request.body
   const badges: Badge[] = []
@@ -27,4 +31,15 @@ if (context.eventName !== github.Event.PULL_REQUEST) {
 
   const updatedBody = body.replace(/\r/g, '').replace(/(---\r?\n## 🦡 Badger\n([\s\S]+)?---)/, badgeMarkdown)
   console.log(`Updated Body:\n${updatedBody}\n\n`)
+
+  const octokit = getOctokit(token)
+  const request = {
+    ...context.repo,
+    owner: context.payload.sender.login,
+    pull_number: context.payload.pull_request.number,
+    body: updatedBody
+  }
+
+  console.log(`Sending request: ${JSON.stringify(request)}`)
+  octokit.pulls.update(request)
 }

@@ -1,6 +1,9 @@
 name: 'Badger'
 description: 'Add customised badges to pull requests.'
 inputs:
+  token:
+    description: 'Authentication token to grant access to editing pull requests'
+    required: true
   badge-01:
     description: 'Configuration for a badge'
     required: true
