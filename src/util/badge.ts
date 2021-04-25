@@ -8,6 +8,23 @@ export interface BadgeOptions {
   colour?: string
 }
 
+const enhanceOptions = (strings: string[]) => {
+  const options: Record<string, string> = {}
+
+  strings.forEach(str => {
+    const [_, name, value] = str.match(/\((\S+?)=(\S+?)\)/)
+
+    options[name] = value
+  })
+
+  return {
+    link: options.link,
+    icon: options.icon,
+    color: options.color,
+    colour: options.colour
+  } as BadgeOptions
+}
+
 export default class Badge {
   public name: string
   public value: string
@@ -17,8 +34,9 @@ export default class Badge {
   public static fromString(str: string) {
     const name = str.match(/^(.+): /)[1]
     const value = str.match(/^.+: (.+?)( \(|$)/)[1]
+    const options = str.match(/\(\S+?=\S+?\)/g)
 
-    return new Badge(name, value)
+    return new Badge(name, value, enhanceOptions(options))
   }
 
   public constructor(name: string, value: string, options: BadgeOptions = {}) {
