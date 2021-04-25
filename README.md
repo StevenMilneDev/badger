@@ -2,6 +2,7 @@
 A GitHub action to add customised badges to pull requests.
 
 ## Usage
+Changed
 
 ### Example Workflow
 Below is an example workflow which runs badger when PRs are opened. It adds two badges linking to environments based on the branch name, it also optionally adds a third badge. The third badge uses custom variables which must be provided in the PR description. If the variables are not provided in the description then the badge will not be generated.
