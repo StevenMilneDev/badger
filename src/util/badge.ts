@@ -15,8 +15,8 @@ export default class Badge {
   private options: BadgeOptions
 
   public static fromString(str: string) {
-    const name = str.match(/^(.+): /)[0]
-    const value = str.match(/^.+: (.+?)( \(|$)/)[0]
+    const name = str.match(/^(.+): /)[1]
+    const value = str.match(/^.+: (.+?)( \(|$)/)[1]
 
     return new Badge(name, value)
   }
