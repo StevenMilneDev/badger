@@ -4,6 +4,12 @@ inputs:
   token:
     description: 'Authentication token to grant access to editing pull requests'
     required: true
+  prefix:
+    description: 'Text to be prepended to the PR description'
+    required: false
+  suffix:
+    description: 'Text to be appended to the end of the PR description'
+    required: false
   badge-01:
     description: 'Configuration for a badge'
     required: true

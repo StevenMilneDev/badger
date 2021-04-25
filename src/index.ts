@@ -13,8 +13,10 @@ if (context.eventName !== github.Event.PULL_REQUEST) {
   error(`Authentication token not provided.`)
 } else {
   const body = context.payload.pull_request.body
-  const badges: Badge[] = []
+  const prefix = getInput('prefix')
+  const suffix = getInput('suffix')
 
+  const badges: Badge[] = []
   for (let i = 1; i <= 10; i++) {
     const index = i < 10 ? `0${i}` : i
     const input = getInput(`badge-${index}`)
@@ -29,7 +31,16 @@ if (context.eventName !== github.Event.PULL_REQUEST) {
   console.log(`Badges: ${badgeMarkdown}`)
   console.log(`Body:\n${body}\n\n`)
 
-  const updatedBody = body.replace(/\r/g, '').replace(/(---\r?\n## 🦡 Badger\n([\s\S]+)?---)/, badgeMarkdown)
+  let updatedBody = body.replace(/\r/g, '').replace(/(---\r?\n## 🦡 Badger\n([\s\S]+)?---)/, badgeMarkdown)
+  
+  if (prefix) {
+    updatedBody = `${prefix}\n${updatedBody}`
+  }
+
+  if (suffix) {
+    updatedBody = `${updatedBody}\n${suffix}`
+  }
+
   console.log(`Updated Body:\n${updatedBody}\n\n`)
 
   const octokit = getOctokit(token)
