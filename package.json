@@ -1,10 +1,10 @@
 {
   "name": "badger",
-  "version": "1.0.0",
+  "version": "0.1.0",
   "description": "A GitHub action to add customised badges to pull requests.",
   "main": "index.js",
   "scripts": {
-    "build": "ncc build src/index.ts --out bin --license licenses.txt",
+    "build": "ncc build src/index.ts --minify --out bin --license licenses.txt",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
