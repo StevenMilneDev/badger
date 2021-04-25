@@ -17,12 +17,11 @@ export default class Badge {
   public static fromString(str: string) {
     const name = str.match(/^(.+): /)[0]
     const value = str.match(/^.+: (.+?)( \(|$)/)[0]
-    const options = str.match(/^.+: .+? \(()\)/)[0]
 
-    return new Badge(name, '')
+    return new Badge(name, value)
   }
 
-  public constructor(name: string = '', value: string = '', options: BadgeOptions = {}) {
+  public constructor(name: string, value: string, options: BadgeOptions = {}) {
     this.name = name
     this.value = value
     this.options = options
