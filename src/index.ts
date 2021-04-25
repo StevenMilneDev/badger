@@ -25,6 +25,6 @@ if (context.eventName !== github.Event.PULL_REQUEST) {
   console.log(`Badges: ${badgeMarkdown}`)
   console.log(`Body:\n${body}\n\n`)
 
-  const updatedBody = body.replace(/(---\n## 🦡 Badger\n([\s\S]+)?---)/, badgeMarkdown)
+  const updatedBody = body.replace(/\r/g, '').replace(/(---\r?\n## 🦡 Badger\n([\s\S]+)?---)/, badgeMarkdown)
   console.log(`Updated Body:\n${updatedBody}\n\n`)
 }
