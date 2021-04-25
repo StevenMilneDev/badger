@@ -3,7 +3,7 @@ import { Shield, getStaticUrl } from './shields'
 
 export interface BadgeOptions {
   link?: string
-  icon?: string
+  logo?: string
   color?: string
   colour?: string
 }
@@ -19,7 +19,7 @@ const enhanceOptions = (strings: string[]) => {
 
   return {
     link: options.link,
-    icon: options.icon,
+    logo: options.logo,
     color: options.color,
     colour: options.colour
   } as BadgeOptions
@@ -52,8 +52,8 @@ export default class Badge {
       options += `(link=${this.options.link})`
     }
 
-    if (this.options.icon) {
-      options += `(icon=${this.options.icon})`
+    if (this.options.logo) {
+      options += `(logo=${this.options.logo})`
     }
 
     if (this.options.color) {
@@ -85,8 +85,8 @@ export default class Badge {
       config.options.link = this.options.link
     }
 
-    if (this.options.icon) {
-      config.options.icon = this.options.icon
+    if (this.options.logo) {
+      config.options.icon = this.options.logo
     }
 
     if (this.options.colour || this.options.color) {
