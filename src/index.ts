@@ -12,7 +12,7 @@ const makeResolver = (name: string, value: string) =>  (source: string) => sourc
 const resolveVariables = (context: Context, source: string) => {
   if (!source.match(/{{.+?}}/)) return source
 
-  const variables = _.uniq(source.match(/{{(.+?)}}/g))
+  const variables = _.uniq(source.match(/{{.+?}}/g)).map(variable => variable.match(/{{().+?)}}/)[1])
 
   const resolvers: Record<string, (value: string) => string> = {
     branch: makeResolver('branch', context.payload.pull_request.head.ref),
