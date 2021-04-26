@@ -34,7 +34,7 @@ export default class Badge {
   public static fromString(str: string) {
     const isValid = str.match(/^.+: .+?(?:$| \(\S+?=\S?\))/)
     if (!isValid) {
-      return undefined
+      throw new Error(`Invalid badge configuration "${str}"`)
     }
 
     const name = str.match(/^(.+): /)[1]

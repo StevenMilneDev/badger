@@ -29,6 +29,16 @@ The following input variables are supported;
 
 Badger does not support any output variables.
 
+### Variable Interpolation
+Badger supports interpolating variables into the prefix, suffix and also the badges. To interpolate a variable into an input just type its name surrounded by double curly braces, i.e. `{{variable}}`.
+
+The following variables are supported;
+
+- `{{branch}}` - The name of the branch that the PR is for
+- `{{pr}}` - The PR number
+- `{{additions}}` - The number of lines added by the PR
+- `{{deletions}}` - The number of lines deleted by the PR
+
 ### Example Workflow
 Below is an example workflow which runs badger when PRs are opened. It adds two badges linking to environments based on the branch name, it also optionally adds a third badge. The third badge uses custom variables which must be provided in the PR description. If the variables are not provided in the description then the badge will not be generated.
 
