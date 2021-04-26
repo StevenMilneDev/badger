@@ -27,7 +27,7 @@ if (context.eventName !== github.Event.PULL_REQUEST) {
     }
   }
 
-  const badgeMarkdown = badges.map(badge => badge.toMarkdown()).join(' ')
+  const badgeMarkdown = `<!-- Start of Badger Additions -->\n${badges.map(badge => badge.toMarkdown()).join(' ')}\n<!-- End of Badger Additions -->`
 
   let updatedBody = body.replace(/\r/g, '').replace(/(---\r?\n## 🦡 Badger\n([\s\S]+)?---)/, badgeMarkdown)
   
