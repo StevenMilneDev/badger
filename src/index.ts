@@ -23,7 +23,13 @@ if (context.eventName !== github.Event.PULL_REQUEST) {
     const input = getInput(`badge-${index}`)
   
     if (input) {
-      badges.push(Badge.fromString(input))
+      const badge = Badge.fromString(input)
+
+      if (badge) {
+        badges.push(badge)
+      } else {
+        error(`Badge configuration ${index} (${input}) is not valid.`)
+      }
     }
   }
 

@@ -32,6 +32,11 @@ export default class Badge {
   private options: BadgeOptions
 
   public static fromString(str: string) {
+    const isValid = str.match(/^.+: .+?(?:$| \(\S+?=\S?\))/)
+    if (!isValid) {
+      return undefined
+    }
+
     const name = str.match(/^(.+): /)[1]
     const value = str.match(/^.+: (.+?)( \(|$)/)[1]
     const options = str.match(/\(\S+?=\S+?\)/g)

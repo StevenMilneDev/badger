@@ -2,6 +2,32 @@
 A GitHub action to add customised badges to pull requests.
 
 ## Usage
+To install and start using this action, create a new `.github/workflows/pull_request.yml` file in your repository. You can copy the example YAML configuration below as a template. Once the template is copied into your workflow file, you can add or remove badges as you please. Badges are specified in the following format;
+
+> `label: message (option=value)(option=value)`
+
+The badge options are optional and can be excluded if you are happy with the defaults.
+
+### Supported Workflow Variables
+The following input variables are supported;
+
+| Name     | Required | Description                                                         |
+|----------|----------|---------------------------------------------------------------------|
+| token    | yes      | Authentication token for granting access to update PR descriptions. |
+| prefix   | no       | Text to be prefixed to the start of the PR description.             |
+| suffix   | no       | Text to be appended to the end of the PR description.               |
+| badge-01 | yes      | Configuration for the first badge.                                  |
+| badge-02 | no       | Configuration for the second badge.                                 |
+| badge-03 | no       | Configuration for the third badge.                                  |
+| badge-04 | no       | Configuration for the fourth badge.                                 |
+| badge-05 | no       | Configuration for the fifth badge.                                  |
+| badge-06 | no       | Configuration for the sixth badge.                                  |
+| badge-07 | no       | Configuration for the seventh badge.                                |
+| badge-08 | no       | Configuration for the eighth badge.                                 |
+| badge-09 | no       | Configuration for the nineth badge.                                 |
+| badge-10 | no       | Configuration for the tenth badge.                                  |
+
+Badger does not support any output variables.
 
 ### Example Workflow
 Below is an example workflow which runs badger when PRs are opened. It adds two badges linking to environments based on the branch name, it also optionally adds a third badge. The third badge uses custom variables which must be provided in the PR description. If the variables are not provided in the description then the badge will not be generated.
@@ -12,11 +38,11 @@ on:
     types: [opened]
 
 jobs:
-  add-badges:
+  pr-description:
     runs-on: ubuntu-latest
-    name: Adds badges to the PR description
+    name: Update PR Description
     steps:
-    - name: Add badges
+    - name: Add Badges
       id: badger
       uses: StevenMilneDev/badger@v1.0.0
       with:
