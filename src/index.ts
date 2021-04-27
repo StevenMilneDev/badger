@@ -7,7 +7,17 @@ import _ from 'lodash'
 
 const token = getInput('token')
 
-const makeResolver = (name: string, value: string) =>  (source: string) => source.replaceAll(`{{${name}}}`, value)
+const replaceAll = (source: string, token: string, value: string) => {
+  let result = source
+
+  while(result.includes(token)) {
+    result = result.replace(token, value)
+  }
+
+  return result
+}
+
+const makeResolver = (name: string, value: string) =>  (source: string) => replaceAll(source, `{{${name}}}`, value)
 
 const resolveVariables = (context: Context, source: string) => {
   if (!source.match(/{{.+?}}/)) return source
