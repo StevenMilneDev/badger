@@ -39,7 +39,7 @@ export default class Badge {
 
     const name = str.match(/^(.+): /)[1]
     const value = str.match(/^.+: (.+?)( \(|$)/)[1]
-    const options = str.match(/\(\S+?=\S+?\)/g)
+    const options = str.match(/\(\S+?=\S+?\)/g) || []
 
     return new Badge(name, value, enhanceOptions(options))
   }
