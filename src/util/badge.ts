@@ -28,8 +28,7 @@ const enhanceOptions = (strings: string[]) => {
 export default class Badge {
   public name: string
   public value: string
-
-  private options: BadgeOptions
+  public options: BadgeOptions
 
   public static fromString(str: string) {
     const isValid = str.match(/^.+: .+?(?:$| \(\S+?=\S?\))/)
@@ -79,23 +78,24 @@ export default class Badge {
     return this.options.link ? markdown.link(image, this.options.link) : image
   }
 
-  public getShieldConfig() {
+  private getShieldConfig() {
     const config: Shield = {
       label: this.name,
       message: this.value,
-      options: {}
+      options: {
+        ...this.options
+      }
     }
 
+    // Don't want to pass links through
     if (this.options.link) {
-      config.options.link = this.options.link
+      delete config.options.link
     }
 
-    if (this.options.logo) {
-      config.options.logo = this.options.logo
-    }
-
-    if (this.options.colour || this.options.color) {
-      config.options.color = this.options.colour || this.options.color
+    // Convert colour to color
+    if (this.options.colour) {
+      config.options.color = this.options.colour
+      delete config.options.colour
     }
 
     return config
