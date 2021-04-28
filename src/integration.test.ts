@@ -37,7 +37,8 @@ it('should generate badges', () => {
 
   const inputs = [
     'Website: {{branch}}.gleanweb.sonocent.dev (link=https://{{branch}}.gleanweb.sonocent.dev)(logo=google-chrome)(colour=white)',
-    'Trello: {{trello.card}} (link={{trello.url}})(logo=trello)'
+    'Trello: {{trello.card}} (link={{trello.url}})(logo=trello)',
+    'Empty: Yup'
   ]
 
   const resolved = inputs.map(input => resolver.resolve(input))
@@ -48,4 +49,5 @@ it('should generate badges', () => {
 
   expect(markdown[0]).toEqual(`[![Website: ${domain}](${SHIELDS_IO_ENDPOINT}?label=Website&message=${domain}&logo=google-chrome&color=white)](https://${domain})`)
   expect(markdown[1]).toEqual(`[![Trello: My Trello Card](${SHIELDS_IO_ENDPOINT}?label=Trello&message=My%20Trello%20Card&logo=trello)](https://trello.com/test-feature)`)
+  expect(markdown[2]).toEqual(`![Empty: Yup](${SHIELDS_IO_ENDPOINT}?label=Empty&message=Yup)`)
 })

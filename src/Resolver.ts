@@ -1,3 +1,4 @@
+import { warning } from '@actions/core'
 import { Context } from '@actions/github/lib/context'
 import _ from 'lodash'
 import { replaceAll } from './util/string'
@@ -70,6 +71,7 @@ export default class Resolver {
     const regex = /(---\r?\n## 🦡 Badger\n([\s\S]+)?---)/
 
     if (!body.match(regex)) {
+      warning('Could not find 🦡 Badger section in description')
       return null
     }
 
