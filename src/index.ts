@@ -1,47 +1,11 @@
-import { getInput, setOutput, info, warning, error } from '@actions/core'
+import { getInput, info, warning, error } from '@actions/core'
 import { getOctokit, context } from '@actions/github'
 import * as github from './util/github'
 import Badge from './util/badge'
-import { Context } from '@actions/github/lib/context'
 import _ from 'lodash'
+import Resolver from './Resolver'
 
 const token = getInput('token')
-
-const replaceAll = (source: string, token: string, value: string) => {
-  let result = source
-
-  while(result.includes(token)) {
-    result = result.replace(token, value)
-  }
-
-  return result
-}
-
-const makeResolver = (name: string, value: string) =>  (source: string) => replaceAll(source, `{{${name}}}`, value)
-
-const resolveVariables = (context: Context, source: string) => {
-  if (!source.match(/{{.+?}}/)) return source
-
-  const variables = _.uniq(source.match(/{{.+?}}/g)).map(variable => variable.match(/{{(.+?)}}/)[1])
-
-  const resolvers: Record<string, (value: string) => string> = {
-    branch: makeResolver('branch', context.payload.pull_request.head.ref),
-    pr: makeResolver('pr', context.payload.pull_request.number.toString()),
-    additions: makeResolver('additions', context.payload.pull_request.additions),
-    deletions: makeResolver('deletions', context.payload.pull_request.deletions)
-  }
-
-  let result = source
-  for (const variable of variables) {
-    if (!resolvers[variable]) {
-      throw new Error(`Could not resolve variable {{${variable}}}`)
-    }
-
-    result = resolvers[variable](result)
-  }
-
-  return result
-}
 
 if (context.eventName !== github.Event.PULL_REQUEST) {
   error(`Badger does not support '${context.eventName}' actions.`)
@@ -50,6 +14,8 @@ if (context.eventName !== github.Event.PULL_REQUEST) {
 } else if (!token) {
   error(`Authentication token not provided.`)
 } else {
+  const resolver = new Resolver(context)
+
   const body = context.payload.pull_request.body
   const prefix = getInput('prefix')
   const suffix = getInput('suffix')
@@ -62,7 +28,7 @@ if (context.eventName !== github.Event.PULL_REQUEST) {
   
     if (input) {
       try {
-        const resolvedConfig = resolveVariables(context, input)
+        const resolvedConfig = resolver.resolve(input)
         const badge = Badge.fromString(resolvedConfig)
 
         badges.push(badge)
@@ -80,7 +46,7 @@ if (context.eventName !== github.Event.PULL_REQUEST) {
     info('Adding prefix...')
 
     try{
-      const resolvedPrefix = resolveVariables(context, prefix)
+      const resolvedPrefix = resolver.resolve(prefix)
       updatedBody = `${resolvedPrefix}\n\n${updatedBody}`
     } catch(error) {
       warning(`Skipping prefix: ${error.message}`)
@@ -91,7 +57,7 @@ if (context.eventName !== github.Event.PULL_REQUEST) {
     info('Adding suffix...')
 
     try{
-      const resolvedSuffix = resolveVariables(context, suffix)
+      const resolvedSuffix = resolver.resolve(suffix)
       updatedBody = `${updatedBody}\n\n${resolvedSuffix}`
     } catch(error) {
       warning(`Skipping suffix: ${error.message}`)

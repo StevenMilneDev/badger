@@ -17,19 +17,13 @@ const enhanceOptions = (strings: string[]) => {
     options[name] = value
   })
 
-  return {
-    link: options.link,
-    logo: options.logo,
-    color: options.color,
-    colour: options.colour
-  } as BadgeOptions
+  return options
 }
 
 export default class Badge {
   public name: string
   public value: string
-
-  private options: BadgeOptions
+  public options: Record<string, string>
 
   public static fromString(str: string) {
     const isValid = str.match(/^.+: .+?(?:$| \(\S+?=\S?\))/)
@@ -44,7 +38,7 @@ export default class Badge {
     return new Badge(name, value, enhanceOptions(options))
   }
 
-  public constructor(name: string, value: string, options: BadgeOptions = {}) {
+  public constructor(name: string, value: string, options: Record<string, string> = {}) {
     this.name = name
     this.value = value
     this.options = options
@@ -79,23 +73,24 @@ export default class Badge {
     return this.options.link ? markdown.link(image, this.options.link) : image
   }
 
-  public getShieldConfig() {
+  private getShieldConfig() {
     const config: Shield = {
       label: this.name,
       message: this.value,
-      options: {}
+      options: {
+        ...this.options
+      }
     }
 
-    if (this.options.link) {
-      config.options.link = this.options.link
+    // Link is handled in Markdown, don't need a custom image type from shields.io
+    if (config.options.link) {
+      delete config.options.link
     }
 
-    if (this.options.logo) {
-      config.options.logo = this.options.logo
-    }
-
-    if (this.options.colour || this.options.color) {
-      config.options.color = this.options.colour || this.options.color
+    // Convert colour to color
+    if (config.options.colour) {
+      config.options.color = config.options.colour
+      delete config.options.colour
     }
 
     return config
