@@ -19,13 +19,13 @@ export default class Resolver {
 
     let result = source
     for (const reference of references) {
-      const value = this.variables[reference]
+      const value = this.getVariable(reference)
 
       if (!value) {
         throw new Error(`Could not resolve variable {{${reference}}}`)
       }
 
-      result = replaceAll(result, `{{${reference}}}`, this.variables[reference])
+      result = replaceAll(result, `{{${reference}}}`, value)
     }
 
     return result
@@ -42,5 +42,27 @@ export default class Resolver {
       additions: this.getPullRequest().additions,
       deletions: this.getPullRequest().deletions
     }
+  }
+
+  private getVariable(name: string) {
+    if (this.variables[name]) {
+      return this.variables[name]
+    }
+    
+    const body = this.getBadgerSection()
+    const regex = new RegExp(`${name.replace('.', ' ')}: (.+?)\r?\n`, 'i')
+    const results = body.match(regex)
+
+    if (results) {
+      this.variables[name] = results[1]
+    }
+    
+    return this.variables[name]
+  }
+
+  private getBadgerSection() {
+    const body = this.getPullRequest().body
+
+    return body.match(/(---\r?\n## 🦡 Badger\n([\s\S]+)?---)/)[1]
   }
 }

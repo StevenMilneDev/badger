@@ -9,6 +9,22 @@ interface MockPullRequest {
   }
 }
 
+const PR_BODY = `
+This is some prelude text which should be ignored...
+
+---
+## 🦡 Badger
+This section will be removed and replaced with generated badges after you save. The fields
+below are required by some of the badges, fill them in if you would like the badges to be
+added. ***Note: It may take a few minutes after saving before this section is replaced.***
+
+Trello Card: My Trello Card
+Trello URL: https://trello.com/sjaoigdic
+---
+
+This is some trailing text which, again, should be ignored.
+`
+
 const getContext = ({
   additions = 0,
   deletions = 0,
@@ -17,6 +33,7 @@ const getContext = ({
 }: Partial<MockPullRequest> = {}) => ({
   payload: {
     pull_request: {
+      body: PR_BODY,
       additions,
       deletions,
       number,
@@ -74,5 +91,16 @@ describe('Static Variables', () => {
     const result = resolver.resolve(source)
 
     expect(result).toEqual(`something ${deletions} something ${deletions}`)
+  })
+})
+
+describe('Dynamic Variables', () => {
+  it('should find variable from PR description', () => {
+    const resolver = new Resolver(getContext())
+
+    const source = `Trello: {{trello.card}} (link={{trello.url}})`
+    const result = resolver.resolve(source)
+
+    expect(result).toEqual('Trello: My Trello Card (link=https://trello.com/sjaoigdic)')
   })
 })
