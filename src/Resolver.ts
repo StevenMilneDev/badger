@@ -68,11 +68,10 @@ export default class Resolver {
 
   private getBadgerSection() {
     const body = this.getPullRequest().body
-    const regex = /(---\r?\n## 🦡 Badger\n([\s\S]+)?---)/
+    const regex = /(---\r?\n## 🦡 Badger\r?\n([\s\S]+)?---)/
 
     if (!body.match(regex)) {
       warning('Could not find 🦡 Badger section in description')
-      console.log(JSON.stringify(this.getPullRequest()))
       return null
     }
 
