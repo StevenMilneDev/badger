@@ -72,6 +72,7 @@ export default class Resolver {
 
     if (!body.match(regex)) {
       warning('Could not find 🦡 Badger section in description')
+      console.log(JSON.stringify(this.getPullRequest()))
       return null
     }
 
