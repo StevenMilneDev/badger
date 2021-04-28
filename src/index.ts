@@ -2,8 +2,46 @@ import { getInput, setOutput, info, warning, error } from '@actions/core'
 import { getOctokit, context } from '@actions/github'
 import * as github from './util/github'
 import Badge from './util/badge'
+import { Context } from '@actions/github/lib/context'
+import _ from 'lodash'
 
 const token = getInput('token')
+
+const replaceAll = (source: string, token: string, value: string) => {
+  let result = source
+
+  while(result.includes(token)) {
+    result = result.replace(token, value)
+  }
+
+  return result
+}
+
+const makeResolver = (name: string, value: string) =>  (source: string) => replaceAll(source, `{{${name}}}`, value)
+
+const resolveVariables = (context: Context, source: string) => {
+  if (!source.match(/{{.+?}}/)) return source
+
+  const variables = _.uniq(source.match(/{{.+?}}/g)).map(variable => variable.match(/{{(.+?)}}/)[1])
+
+  const resolvers: Record<string, (value: string) => string> = {
+    branch: makeResolver('branch', context.payload.pull_request.head.ref),
+    pr: makeResolver('pr', context.payload.pull_request.number.toString()),
+    additions: makeResolver('additions', context.payload.pull_request.additions),
+    deletions: makeResolver('deletions', context.payload.pull_request.deletions)
+  }
+
+  let result = source
+  for (const variable of variables) {
+    if (!resolvers[variable]) {
+      throw new Error(`Could not resolve variable {{${variable}}}`)
+    }
+
+    result = resolvers[variable](result)
+  }
+
+  return result
+}
 
 if (context.eventName !== github.Event.PULL_REQUEST) {
   error(`Badger does not support '${context.eventName}' actions.`)
@@ -23,12 +61,13 @@ if (context.eventName !== github.Event.PULL_REQUEST) {
     const input = getInput(`badge-${index}`)
   
     if (input) {
-      const badge = Badge.fromString(input)
+      try {
+        const resolvedConfig = resolveVariables(context, input)
+        const badge = Badge.fromString(resolvedConfig)
 
-      if (badge) {
         badges.push(badge)
-      } else {
-        error(`Badge configuration ${index} (${input}) is not valid.`)
+      } catch(error) {
+        warning(`Skipping badge-${index}: ${error.message}`)
       }
     }
   }
@@ -39,12 +78,24 @@ if (context.eventName !== github.Event.PULL_REQUEST) {
   
   if (prefix) {
     info('Adding prefix...')
-    updatedBody = `${prefix}\n\n${updatedBody}`
+
+    try{
+      const resolvedPrefix = resolveVariables(context, prefix)
+      updatedBody = `${resolvedPrefix}\n\n${updatedBody}`
+    } catch(error) {
+      warning(`Skipping prefix: ${error.message}`)
+    }
   }
 
   if (suffix) {
     info('Adding suffix...')
-    updatedBody = `${updatedBody}\n\n${suffix}`
+
+    try{
+      const resolvedSuffix = resolveVariables(context, suffix)
+      updatedBody = `${updatedBody}\n\n${resolvedSuffix}`
+    } catch(error) {
+      warning(`Skipping suffix: ${error.message}`)
+    }
   }
 
   info('Updating PR description...')
