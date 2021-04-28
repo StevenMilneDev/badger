@@ -87,15 +87,18 @@ export default class Badge {
       }
     }
 
+    delete config.options.link
+    delete config.options.color
+    delete config.options.colour
+
     // Don't want to pass links through
     if (this.options.link) {
       delete config.options.link
     }
 
     // Convert colour to color
-    if (this.options.colour) {
-      config.options.color = this.options.colour
-      delete config.options.colour
+    if (this.options.colour || this.options.color) {
+      config.options.color = this.options.colour || this.options.color
     }
 
     return config

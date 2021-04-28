@@ -50,7 +50,12 @@ export default class Resolver {
     }
     
     const body = this.getBadgerSection()
-    const regex = new RegExp(`${name.replace('.', ' ')}: (.+?)\r?\n`, 'i')
+
+    if (!body) {
+      return undefined
+    }
+
+    const regex = new RegExp(`^${name.replace('.', ' ')}: (.+?)\r?\n`, 'im')
     const results = body.match(regex)
 
     if (results) {
@@ -62,7 +67,12 @@ export default class Resolver {
 
   private getBadgerSection() {
     const body = this.getPullRequest().body
+    const regex = /(---\r?\n## 🦡 Badger\n([\s\S]+)?---)/
 
-    return body.match(/(---\r?\n## 🦡 Badger\n([\s\S]+)?---)/)[1]
+    if (!body.match(regex)) {
+      return null
+    }
+
+    return body.match(regex)[1]
   }
 }
