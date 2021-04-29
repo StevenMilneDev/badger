@@ -73,5 +73,9 @@ if (context.eventName !== github.Event.PULL_REQUEST) {
     body: updatedBody
   }
 
-  octokit.pulls.update(request)
+  try {
+    octokit.pulls.update(request)
+  } catch (e) {
+    error(`Unable to connect to github REST API: ${e.message}`)
+  }
 }
