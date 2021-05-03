@@ -1,4 +1,4 @@
-import { getInput, info, warning, error } from '@actions/core'
+import { getInput, info, warning, error, setFailed } from '@actions/core'
 import { getOctokit, context } from '@actions/github'
 import { Context } from '@actions/github/lib/context'
 import * as github from './util/github'
@@ -49,20 +49,25 @@ async function updatePR(context: Context, body: string) {
 
     console.log(`Response: ${JSON.stringify(response)}`)
   } catch (e) {
+    const message = 'Unable to connect to github API'
+
     if (e instanceof Error) {
-      error(`Unable to connect to github API (${e.name}): ${e.message}\n${e.stack}`)
+      error(`${message} (${e.name}): ${e.message}\n${e.stack}`)
     } else {
-      error(`Unable to connect to github API: ${JSON.stringify(e)}`)
+      error(`${message}: ${JSON.stringify(e)}`)
     }
+
+    setFailed(message)
   }
 }
 
 if (context.eventName !== github.Event.PULL_REQUEST) {
-  error(`Badger does not support '${context.eventName}' actions.`)
+  error(`Badger does not support '${context.eventName}' actions`)
 } else if (context.payload.action !== github.PullRequestAction.OPENED) {
-  warning(`Skipping Badger, cannot handle '${context.action}' events.`)
+  warning(`Skipping Badger, cannot handle '${context.action}' events`)
 } else if (!token) {
-  error(`Authentication token not provided.`)
+  error(`Authentication token not provided`)
+  setFailed(`Authentication token not provided`)
 } else {
   const resolver = new Resolver(context)
 
