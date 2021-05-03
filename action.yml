@@ -4,6 +4,9 @@ inputs:
   token:
     description: 'Authentication token to grant access to editing pull requests'
     required: true
+  debug:
+    description: 'Flag which puts the action into debug mode'
+    required: false
   prefix:
     description: 'Text to be prepended to the PR description'
     required: false
