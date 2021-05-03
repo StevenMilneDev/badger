@@ -35,11 +35,19 @@ function generateBadges(resolver: Resolver) {
   return `<!-- Start of Badger Additions -->\n${badges.map(badge => badge.toMarkdown()).join(' ')}\n<!-- End of Badger Additions -->`
 }
 
-async function updatePR(repo: string, owner: string, number: number,body: string) {
+async function updatePR(context: Context, body: string) {
   try {
-    const octokit = getOctokit(token)
+    const octokit = getOctokit(token, {
+      baseUrl: context.payload?.organization.url || 'https://api.github.com'
+    })
 
-    const response = await octokit.pulls.update({ repo, owner, body, pull_number: number })
+     
+    const response = await octokit.pulls.update({
+      repo: context.payload.repository.name,
+      owner: context.payload.sender.login,
+      pull_number: context.payload.pull_request.number,
+      body
+    })
 
     console.log(`Response: ${JSON.stringify(response)}`)
   } catch (e) {
@@ -92,5 +100,5 @@ if (context.eventName !== github.Event.PULL_REQUEST) {
   }
 
   info('Updating PR description...')
-  updatePR(context.payload.repository.name, context.payload.sender.login, context.payload.pull_request.number, updatedBody)
+  updatePR(context, updatedBody)
 }
