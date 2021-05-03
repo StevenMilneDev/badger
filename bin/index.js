@@ -23521,6 +23521,7 @@ class Resolver {
 ;// CONCATENATED MODULE: ./src/index.ts
 
 
+console.log(`********************************\n\n${JSON.stringify(github.context)}\n\n********************************`);
 
 
 

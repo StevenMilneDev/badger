@@ -1,5 +1,6 @@
 import { getInput, info, warning, error } from '@actions/core'
 import { getOctokit, context } from '@actions/github'
+console.log(`********************************\n\n${JSON.stringify(context)}\n\n********************************`)
 import * as github from './util/github'
 import Badge from './util/badge'
 import _ from 'lodash'
