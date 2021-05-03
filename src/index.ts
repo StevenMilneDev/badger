@@ -64,16 +64,16 @@ if (context.eventName !== github.Event.PULL_REQUEST) {
     }
   }
 
-  info('Updating PR description...')
-  const octokit = getOctokit(token)
-  const request = {
-    ...context.repo,
-    owner: context.payload.sender.login,
-    pull_number: context.payload.pull_request.number,
-    body: updatedBody
-  }
-
   try {
+    info('Updating PR description...')
+    const octokit = getOctokit(token)
+    const request = {
+      ...context.repo,
+      owner: context.payload.sender.login,
+      pull_number: context.payload.pull_request.number,
+      body: updatedBody
+    }
+
     octokit.pulls.update(request)
   } catch (e) {
     error(`Unable to connect to github API: ${e.message}`)
