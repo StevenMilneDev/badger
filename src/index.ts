@@ -1,4 +1,4 @@
-import { getInput, info, warning, error, setFailed } from '@actions/core'
+import { getInput, debug, info, warning, error, setFailed } from '@actions/core'
 import { getOctokit, context } from '@actions/github'
 import { Context } from '@actions/github/lib/context'
 import * as github from './util/github'
@@ -7,11 +7,8 @@ import _ from 'lodash'
 import Resolver from './Resolver'
 
 const token = getInput('token')
-const isDebug = getInput('debug') === 'true'
 
-if (isDebug) {
-  console.log(`********************************\nGitHub Context\n\n${JSON.stringify(context)}\n\n********************************`)
-}
+debug(`********************************\nGitHub Context\n\n${JSON.stringify(context)}\n\n********************************`)
 
 function generateBadges(resolver: Resolver) {
   const badges: Badge[] = []
@@ -48,15 +45,7 @@ async function updatePR(context: Context, body: string) {
 
     console.log(`Response: ${JSON.stringify(response)}`)
   } catch (e) {
-    const message = 'Unable to connect to github API'
-
-    if (e instanceof Error) {
-      error(`${message} (${e.name}): ${e.message}\n${e.stack}`)
-    } else {
-      error(`${message}: ${JSON.stringify(e)}`)
-    }
-
-    setFailed(message)
+    setFailed(`Unable to connect to github API (${e.name}): ${e.message}${e instanceof Error ? `\n\n${e.stack}` : ''}`)
   }
 }
 
@@ -65,7 +54,6 @@ if (context.eventName !== github.Event.PULL_REQUEST) {
 } else if (context.payload.action !== github.PullRequestAction.OPENED) {
   warning(`Skipping Badger, cannot handle '${context.action}' events`)
 } else if (!token) {
-  error(`Authentication token not provided`)
   setFailed(`Authentication token not provided`)
 } else {
   const resolver = new Resolver(context)
