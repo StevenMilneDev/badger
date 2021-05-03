@@ -4,7 +4,9 @@
   "description": "A GitHub action to add customised badges to pull requests.",
   "main": "index.js",
   "scripts": {
+    "clean": "rm -fr ./bin",
     "build": "ncc build src/index.ts --minify --out bin --license licenses.txt",
+    "build:dev": "ncc build src/index.ts --out bin --source-map",
     "test": "jest --watch"
   },
   "repository": {

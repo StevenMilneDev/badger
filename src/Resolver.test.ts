@@ -83,8 +83,28 @@ describe('Static Variables', () => {
     expect(result).toEqual(`something ${additions} something ${additions}`)
   })
 
+  it('should support {{additions}} with a value of zero', () => {
+    const additions = 0
+    const resolver = new Resolver(getContext({ additions }))
+
+    const source = 'something {{additions}} something {{additions}}'
+    const result = resolver.resolve(source)
+
+    expect(result).toEqual(`something ${additions} something ${additions}`)
+  })
+
   it('should support {{deletions}}', () => {
     const deletions = 512
+    const resolver = new Resolver(getContext({ deletions }))
+
+    const source = 'something {{deletions}} something {{deletions}}'
+    const result = resolver.resolve(source)
+
+    expect(result).toEqual(`something ${deletions} something ${deletions}`)
+  })
+
+  it('should support {{deletions}} with a value of zero', () => {
+    const deletions = 0
     const resolver = new Resolver(getContext({ deletions }))
 
     const source = 'something {{deletions}} something {{deletions}}'
