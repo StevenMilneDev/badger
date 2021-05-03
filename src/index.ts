@@ -41,8 +41,7 @@ async function updatePR(context: Context, body: string) {
     const octokit = getOctokit(token)
 
     const response = await octokit.pulls.update({
-      repo: context.payload.repository.full_name,
-      owner: context.payload.sender.login,
+      ...context.repo,
       pull_number: context.payload.pull_request.number,
       body
     })
