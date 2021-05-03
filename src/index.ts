@@ -41,9 +41,8 @@ async function updatePR(context: Context, body: string) {
       baseUrl: context.payload?.organization.url || 'https://api.github.com'
     })
 
-     
     const response = await octokit.pulls.update({
-      repo: context.payload.repository.name,
+      repo: context.payload.repository.full_name,
       owner: context.payload.sender.login,
       pull_number: context.payload.pull_request.number,
       body
