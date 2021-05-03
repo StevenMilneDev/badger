@@ -22,7 +22,7 @@ export default class Resolver {
     for (const reference of references) {
       const value = this.getVariable(reference)
 
-      if (!value) {
+      if (value === null || value === undefined) {
         throw new Error(`Could not resolve variable {{${reference}}}`)
       }
 
