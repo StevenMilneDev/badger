@@ -37,9 +37,8 @@ function generateBadges(resolver: Resolver) {
 
 async function updatePR(context: Context, body: string) {
   try {
-    const octokit = getOctokit(token, {
-      baseUrl: context.payload?.organization.url || 'https://api.github.com'
-    })
+    // TODO -- Set baseUrl option for compatibility with enterprise
+    const octokit = getOctokit(token)
 
     const response = await octokit.pulls.update({
       repo: context.payload.repository.full_name,
