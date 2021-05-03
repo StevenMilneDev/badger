@@ -1,5 +1,6 @@
 import { getInput, info, warning, error } from '@actions/core'
 import { getOctokit, context } from '@actions/github'
+import { Context } from '@actions/github/lib/context'
 import * as github from './util/github'
 import Badge from './util/badge'
 import _ from 'lodash'
@@ -12,21 +13,9 @@ if (isDebug) {
   console.log(`********************************\nGitHub Context\n\n${JSON.stringify(context)}\n\n********************************`)
 }
 
-if (context.eventName !== github.Event.PULL_REQUEST) {
-  error(`Badger does not support '${context.eventName}' actions.`)
-} else if (context.payload.action !== github.PullRequestAction.OPENED) {
-  warning(`Skipping Badger, cannot handle '${context.action}' events.`)
-} else if (!token) {
-  error(`Authentication token not provided.`)
-} else {
-  const resolver = new Resolver(context)
-
-  const body = context.payload.pull_request.body
-  const prefix = getInput('prefix')
-  const suffix = getInput('suffix')
-
-  info('Generating badges...')
+function generateBadges(resolver: Resolver) {
   const badges: Badge[] = []
+
   for (let i = 1; i <= 10; i++) {
     const index = i < 10 ? `0${i}` : i
     const input = getInput(`badge-${index}`)
@@ -43,7 +32,40 @@ if (context.eventName !== github.Event.PULL_REQUEST) {
     }
   }
 
-  const badgeMarkdown = `<!-- Start of Badger Additions -->\n${badges.map(badge => badge.toMarkdown()).join(' ')}\n<!-- End of Badger Additions -->`
+  return `<!-- Start of Badger Additions -->\n${badges.map(badge => badge.toMarkdown()).join(' ')}\n<!-- End of Badger Additions -->`
+}
+
+async function updatePR(repo: string, owner: string, number: number,body: string) {
+  try {
+    const octokit = getOctokit(token)
+
+    const response = await octokit.pulls.update({ repo, owner, body, pull_number: number })
+
+    console.log(`Response: ${JSON.stringify(response)}`)
+  } catch (e) {
+    if (e instanceof Error) {
+      error(`Unable to connect to github API (${e.name}): ${e.message}\n${e.stack}`)
+    } else {
+      error(`Unable to connect to github API: ${JSON.stringify(e)}`)
+    }
+  }
+}
+
+if (context.eventName !== github.Event.PULL_REQUEST) {
+  error(`Badger does not support '${context.eventName}' actions.`)
+} else if (context.payload.action !== github.PullRequestAction.OPENED) {
+  warning(`Skipping Badger, cannot handle '${context.action}' events.`)
+} else if (!token) {
+  error(`Authentication token not provided.`)
+} else {
+  const resolver = new Resolver(context)
+
+  const body = context.payload.pull_request.body
+  const prefix = getInput('prefix')
+  const suffix = getInput('suffix')
+
+  info('Generating badges...')
+  const badgeMarkdown = generateBadges(resolver)
 
   let updatedBody = body.replace(/\r/g, '').replace(/(---\r?\n## 🦡 Badger\n([\s\S]+)?---)/, badgeMarkdown)
   
@@ -69,18 +91,6 @@ if (context.eventName !== github.Event.PULL_REQUEST) {
     }
   }
 
-  try {
-    info('Updating PR description...')
-    const octokit = getOctokit(token)
-    const request = {
-      repo: context.payload.repository.name,
-      owner: context.payload.sender.login,
-      pull_number: context.payload.pull_request.number,
-      body: updatedBody
-    }
-
-    octokit.pulls.update(request)
-  } catch (e) {
-    error(`Unable to connect to github API: ${e.message}`)
-  }
+  info('Updating PR description...')
+  updatePR(context.payload.repository.name, context.payload.sender.login, context.payload.pull_request.number, updatedBody)
 }
