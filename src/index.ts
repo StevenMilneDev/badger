@@ -1,12 +1,16 @@
 import { getInput, info, warning, error } from '@actions/core'
 import { getOctokit, context } from '@actions/github'
-console.log(`********************************\n\n${JSON.stringify(context)}\n\n********************************`)
 import * as github from './util/github'
 import Badge from './util/badge'
 import _ from 'lodash'
 import Resolver from './Resolver'
 
 const token = getInput('token')
+const isDebug = getInput('debug') === 'true'
+
+if (isDebug) {
+  console.log(`********************************\nGitHub Context\n\n${JSON.stringify(context)}\n\n********************************`)
+}
 
 if (context.eventName !== github.Event.PULL_REQUEST) {
   error(`Badger does not support '${context.eventName}' actions.`)
@@ -69,7 +73,7 @@ if (context.eventName !== github.Event.PULL_REQUEST) {
     info('Updating PR description...')
     const octokit = getOctokit(token)
     const request = {
-      ...context.repo,
+      repo: context.payload.repository.name,
       owner: context.payload.sender.login,
       pull_number: context.payload.pull_request.number,
       body: updatedBody
@@ -78,6 +82,5 @@ if (context.eventName !== github.Event.PULL_REQUEST) {
     octokit.pulls.update(request)
   } catch (e) {
     error(`Unable to connect to github API: ${e.message}`)
-    console.log(`********************************\n\n${JSON.stringify(context)}\n\n********************************`)
   }
 }
