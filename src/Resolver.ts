@@ -40,8 +40,8 @@ export default class Resolver {
     return {
       branch: this.getPullRequest().head.ref,
       pr: this.getPullRequest().number.toString(),
-      additions: this.getPullRequest().additions,
-      deletions: this.getPullRequest().deletions
+      additions: this.getPullRequest().additions || 0,
+      deletions: this.getPullRequest().deletions || 0
     }
   }
 
