@@ -81,9 +81,8 @@ jobs:
       uses: StevenMilneDev/badger@v1.0.0
       with:
         token: ${{ secrets.GITHUB_TOKEN }}
-        badge-01: 'Website: {{branchname}}.gleanweb.sonocent.com (link=https://{{branchname}}.gleanweb.sonocent.com)(icon=google_chrome)'
-        badge-02: 'Strapi: strapi.{{branchname}}.gleanweb.sonocent.com (link=https://strapi.{{branchname}}.gleanweb.sonocent.com)(icon=strapi)'
-        badge-03: 'Trello: {{trello.card}} (link={{trello.url}})(icon=trello)'
+        badge-01: 'Test Environment: {{branch}}.example.dev (link=https://{{branch}}.example.dev/)(logo=googleChrome)(logoColor=white)'
+        badge-02: 'Trello: {{trello.card}} (link={{trello.url}})(logo=trello)'
 ```
 
 ### Example PR Description Template
