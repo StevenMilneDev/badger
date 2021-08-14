@@ -1,7 +1,7 @@
 import { warning } from '@actions/core'
 import { Context } from '@actions/github/lib/context'
 import _ from 'lodash'
-import { replaceAll } from './util/string'
+import { replaceAll, asEnvironmentVariableName } from './util/string'
 import { findReferences } from './util/variables'
 
 export default class Resolver {
@@ -62,6 +62,12 @@ export default class Resolver {
     if (results) {
       this.variables[name] = results[1]
     }
+
+    // Fall back to env var if variable not found in PR
+    const env = this.getEnvironmentVariable(name)
+    if (!this.variables[name] && env) {
+      this.variables[name] = env
+    }
     
     return this.variables[name]
   }
@@ -76,5 +82,9 @@ export default class Resolver {
     }
 
     return body.match(regex)[1]
+  }
+
+  private getEnvironmentVariable(name: string) {
+    return process.env[name] || process.env[asEnvironmentVariableName(name)]
   }
 }

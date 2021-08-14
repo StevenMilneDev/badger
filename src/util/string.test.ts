@@ -1,4 +1,4 @@
-import { replaceAll } from "./string"
+import { asEnvironmentVariableName, replaceAll } from "./string"
 
 describe('Replace All', () => {
   it('should do nothing if the token could not be found', () => {
@@ -15,5 +15,15 @@ describe('Replace All', () => {
     const value = 'unit'
    
     expect(replaceAll(source, token, value)).toEqual(`this is a ${value} test ${value}`)
+  })
+})
+
+describe('As Environment Variable Name', () => {
+  it('should uppercase all characters', () => {
+    expect(asEnvironmentVariableName('heLlo')).toBe('HELLO')
+  })
+
+  it('should convert full stops to underscores', () => {
+    expect(asEnvironmentVariableName('trello.card')).toBe('TRELLO_CARD')
   })
 })

@@ -12,6 +12,55 @@ To install and start using this action, create a new `.github/workflows/pull_req
 
 The badge options are optional and can be excluded if you are happy with the defaults.
 
+### Example Workflow
+Below is an example workflow which runs badger when PRs are opened. It adds two badges linking to environments based on the branch name, it also optionally adds a third badge. The third badge uses custom variables which must be provided in the PR description. If the variables are not provided in the description then the badge will not be generated.
+
+```yml
+on: 
+  pull_request:
+    types: [opened]
+
+jobs:
+  pr-description:
+    runs-on: ubuntu-latest
+    name: Update PR Description
+    steps:
+    - name: Add Badges
+      id: badger
+      uses: StevenMilneDev/badger@v1.0.3
+      env:
+        TEST_DOMAIN: example.com
+        TRELLO_CARD: Untitled Card
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+        badge-01: 'Test Environment: {{branch}}.{{TEST_DOMAIN}} (link=https://{{branch}}.{{TEST_DOMAIN}}/)(logo=googleChrome)(logoColor=white)'
+        badge-02: 'Trello: {{trello.card}} (link={{trello.url}})(logo=trello)'
+```
+
+### Example PR Description Template
+The template below contains the badger configuration section. The section contains fields for the variables `trello.card` and `trello.url`.
+
+```
+---
+## 🦡 Badger
+This section will be removed and replaced with generated badges after you save. The fields
+below are required by some of the badges, fill them in if you would like the badges to be
+added. ***Note: It may take a few minutes after saving before this section is replaced.***
+
+Trello Card: 
+Trello URL: 
+
+---
+```
+
+If no variables are required in the badger section then the minimal version can be used;
+
+```
+---
+## 🦡 Badger
+---
+```
+
 ### Supported Workflow Variables
 The following input variables are supported;
 
@@ -33,21 +82,30 @@ The following input variables are supported;
 
 Badger does not support any output variables.
 
-### Variable Interpolation
-Badger supports interpolating variables into the prefix, suffix and also the badges. To interpolate a variable into an input just type its name surrounded by double curly braces, i.e. `{{variable}}`.
+### Variables
+Badger supports interpolating variables into the prefix, suffix and also the badges. To interpolate a variable into an input just type its name surrounded by double curly braces, i.e. `{{variable}}`. A few different types of variables are supported
 
-The following variables are supported by default;
+#### Static Variables
+Static variables come be resolved directly from GitHub. The following static variables are supported;
 
 - `{{branch}}` - The name of the branch that the PR is for
 - `{{pr}}` - The PR number
 - `{{additions}}` - The number of lines added by the PR
 - `{{deletions}}` - The number of lines deleted by the PR
 
-If you add a badger section to your PR template then you will be able to access more variables from the description itself. This can be used to get variables from developers raising the PR. You can create a PR template by creating the file `.github/pull_request_template.md` in your repository, anything put in this file will be pre-filled into the PR descripition when opened. There is an example badger section at the bottom of this readme that you can copy into your own template.
+#### Dynamic Variables
+Dynamic variables are resolved from the badger section of the PR description. This allows the PR creator to type text into the descripition that can be pulled into a badge.
+
+If you add a badger section to your PR template then you will be able to make use of dynamic variables. You can create a PR template by creating the file `.github/pull_request_template.md` in your repository, anything put in this file will be pre-filled into the PR descripition when opened. There is an example badger section at the top of this readme that you can copy into your own template.
 
 To create a variable, just add a new line in the badger section that starts with the variable name followed by a colon and a space. The name can be uppercase, lowercase or a mixture of both - it can even contain spaces (but no symbols). You can reference the variable in the normal `{{variable}}` fashion in the badge configuration. If the variable name contains a space then use a full stop when referencing it. For example the variable `Trello URL: ` would be referenced like `{{trello.url}}`.
 
 When the PR is raised, the person raising it should add a value to each variable in the badger section. That value will then be injected into the badges through the variable. If no value is given or the line is deleted then the badge won't be generated.
+
+#### Environment Variables
+Environment variables can be passed into Badger via the workflow configuration. These variables can be accessed just like the others; `{{TEST_DOMAIN}}`. 
+
+Environment variables can also be used as a fallback value for a dynamic variable. If a dynamic variable cannot be found in the PR description, then an environment variable with a matching name will be returned. For example if the variable `trello.card` could not be found, then badger will look for an environment variable called `TRELLO_CARD`. The name is uppercased and full stops are replaced with underscores.
 
 ### Badge Options
 The following options are supported by the generated badges;
@@ -62,44 +120,6 @@ The following options are supported by the generated badges;
 | `style`      | A style of badge, one of `plastic`, `flat`, `flat-square`, `for-the-badge` and `social`                       |
 
 All colours can be specified in hex, rgb, rgba, hsl, hsla and css name formats
-
-### Example Workflow
-Below is an example workflow which runs badger when PRs are opened. It adds two badges linking to environments based on the branch name, it also optionally adds a third badge. The third badge uses custom variables which must be provided in the PR description. If the variables are not provided in the description then the badge will not be generated.
-
-```yml
-on: 
-  pull_request:
-    types: [opened]
-
-jobs:
-  pr-description:
-    runs-on: ubuntu-latest
-    name: Update PR Description
-    steps:
-    - name: Add Badges
-      id: badger
-      uses: StevenMilneDev/badger@v1.0.0
-      with:
-        token: ${{ secrets.GITHUB_TOKEN }}
-        badge-01: 'Test Environment: {{branch}}.example.dev (link=https://{{branch}}.example.dev/)(logo=googleChrome)(logoColor=white)'
-        badge-02: 'Trello: {{trello.card}} (link={{trello.url}})(logo=trello)'
-```
-
-### Example PR Description Template
-The template below contains the badger configuration section. The section contains fields for the variables `trello.card` and `trello.url`.
-
-```
----
-## 🦡 Badger
-This section will be removed and replaced with generated badges after you save. The fields
-below are required by some of the badges, fill them in if you would like the badges to be
-added. ***Note: It may take a few minutes after saving before this section is replaced.***
-
-Trello Card: 
-Trello URL: 
-
----
-```
 
 ## Building
 Before you can build the action, you must first install the dependencies. You must have [NodeJS](https://nodejs.org/en/) installed. To install the rest of the dependencies, run the `npm install` command.
