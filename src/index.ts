@@ -8,8 +8,6 @@ import Resolver from './Resolver'
 
 const token = getInput('token')
 
-debug(`********************************\nGitHub Context\n\n${JSON.stringify(context)}\n\n********************************`)
-
 function generateBadges(resolver: Resolver) {
   const badges: Badge[] = []
 
@@ -37,13 +35,11 @@ async function updatePR(context: Context, body: string) {
     // TODO -- Set baseUrl option for compatibility with enterprise
     const octokit = getOctokit(token)
 
-    const response = await octokit.pulls.update({
+    await octokit.pulls.update({
       ...context.repo,
       pull_number: context.payload.pull_request.number,
       body
     })
-
-    console.log(`Response: ${JSON.stringify(response)}`)
   } catch (e) {
     setFailed(`Unable to connect to github API (${e.name}): ${e.message}${e instanceof Error ? `\n\n${e.stack}` : ''}`)
   }
