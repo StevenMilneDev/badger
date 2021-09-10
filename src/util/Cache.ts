@@ -12,12 +12,12 @@ export type Resolver<T> = (name: string) => T | undefined
  * returned by the resolver will be cached for future queries.
  */
 export default class Cache<T> {
+  private readonly resolver: Resolver<T>
   private values: Record<string, T>
-  private resolver: Resolver<T>
 
   constructor(resolver: Resolver<T>) {
-    this.values = {}
     this.resolver = resolver
+    this.values = {}
   }
 
   /**
