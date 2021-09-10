@@ -3,24 +3,9 @@ import { getInput } from '@actions/core'
 import { Event, PullRequestAction } from './github/events'
 import { ActionNotSupportedError, EventNotSupportedError, InvalidTokenError } from './github/errors'
 import PullRequestHelper from './github/PullRequestHelper'
+import { makeContext, mockify } from './testUtil'
 
 jest.mock('@actions/core')
-
-const mockify = (fn: Function) => fn as jest.Mock
-
-interface MockContext {
-  eventName: string
-  payload: {
-    action: string
-  }
-}
-
-const makeContext = (event: Event = Event.PULL_REQUEST, action: string = PullRequestAction.OPENED) => ({
-  eventName: event,
-  payload: {
-    action
-  }
-}) as any
 
 it('should throw an error if no token is provided', () => {
   mockify(getInput).mockReturnValue(undefined)
@@ -36,7 +21,7 @@ it('should not throw an error when token is provided', () => {
   const github = new Github()
   github.onPullRequest(PullRequestAction.OPENED, () => {})
 
-  expect(() => github.handle(makeContext(Event.PULL_REQUEST, PullRequestAction.OPENED))).not.toThrow()
+  expect(() => github.handle(makeContext({ eventName: Event.PULL_REQUEST, action: PullRequestAction.OPENED }))).not.toThrow()
 })
 
 describe('Events', () => {
@@ -47,14 +32,14 @@ describe('Events', () => {
   it('should throw an error if event not handled', () => {
     const github = new Github()
 
-    const handle = () => github.handle(makeContext(Event.PULL_REQUEST, PullRequestAction.OPENED))
+    const handle = () => github.handle(makeContext({ eventName: Event.PULL_REQUEST, action: PullRequestAction.OPENED }))
 
     expect(handle).toThrowError(EventNotSupportedError)
   })
 
   it('should throw an error if action not handled', () => {
     const github = new Github()
-    const context = makeContext(Event.PULL_REQUEST, PullRequestAction.EDITED)
+    const context = makeContext({ eventName: Event.PULL_REQUEST, action: PullRequestAction.EDITED })
 
     github.onPullRequest(PullRequestAction.OPENED, () => {})
 
@@ -65,7 +50,7 @@ describe('Events', () => {
 
   it('should invoke all action handlers', () => {
     const github = new Github()
-    const context = makeContext(Event.PULL_REQUEST, PullRequestAction.OPENED)
+    const context = makeContext({ eventName: Event.PULL_REQUEST, action: PullRequestAction.OPENED })
 
     const handler1 = jest.fn()
     const handler2 = jest.fn()
@@ -90,7 +75,7 @@ describe('Events', () => {
 describe('Helpers', () => {
   it('should not provide a helper to events which dont one', () => {
     const github = new Github()
-    const context = makeContext(Event.FORK, 'something')
+    const context = makeContext({ eventName: Event.FORK, action: 'something' })
     const handler = jest.fn()
 
     github.addEventHandler(Event.FORK, 'something', handler)
@@ -101,7 +86,7 @@ describe('Helpers', () => {
 
   it('should provide a helper for pull request events', () => {
     const github = new Github()
-    const context = makeContext(Event.PULL_REQUEST, PullRequestAction.OPENED)
+    const context = makeContext({ eventName: Event.PULL_REQUEST, action: PullRequestAction.OPENED })
     const handler = jest.fn()
 
     github.addEventHandler(Event.PULL_REQUEST, PullRequestAction.OPENED, handler)

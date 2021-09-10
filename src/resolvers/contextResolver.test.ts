@@ -1,24 +1,5 @@
+import { makeContext } from "../util/testUtil"
 import contextResolver from "./contextResolver"
-
-interface MockContext {
-  branch: string
-  pr: number
-  additions: number
-  deletions: number
-}
-
-const makeContext = ({ branch = 'test-branch', pr = 1, additions = 10, deletions = 5 }: Partial<MockContext> = {}) => ({
-  payload: {
-    pull_request: {
-      number: pr,
-      additions,
-      deletions,
-      head: {
-        ref: branch
-      }
-    }
-  }
-}) as any
 
 it('should return undefined for unknown properties', () => {
   const context = makeContext()
@@ -36,11 +17,11 @@ it('should return the branch name', () => {
 })
 
 it('should return the PR number', () => {
-  const pr = 42
-  const context = makeContext({ pr })
+  const prNumber = 42
+  const context = makeContext({ prNumber })
   const resolver = contextResolver(context)
 
-  expect(resolver('pr')).toBe(pr.toString())
+  expect(resolver('pr')).toBe(prNumber.toString())
 })
 
 it('should return the additions', () => {

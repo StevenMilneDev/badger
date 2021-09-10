@@ -1,25 +1,8 @@
 import descriptionResolver from "./descriptionResolver"
 import { warning } from '@actions/core'
+import { BodyBuilder, makeContext } from "../util/testUtil"
 
 jest.mock('@actions/core')
-
-interface MockContext {
-  body: string
-}
-
-const makeContext = ({ body = '' }: Partial<MockContext> = {}) => ({
-  payload: {
-    pull_request: { body }
-  }
-}) as any
-
-const badger = (lines: string[]) => `
----
-## 🦡 Badger
-
-${lines.join('\n')}
----
-`
 
 it('should return undefined if no badger section', () => {
   const context = makeContext()
@@ -30,7 +13,7 @@ it('should return undefined if no badger section', () => {
 })
 
 it('should return undefined if no field exists with given name', () => {
-  const body = badger([`Test: value`])
+  const body = new BodyBuilder('').withBadgerLines(['Test: Value']).build()
   const context = makeContext({ body })
   const resolver = descriptionResolver(context)
 
@@ -39,7 +22,7 @@ it('should return undefined if no field exists with given name', () => {
 
 it('should return value from badger section of PR description', () => {
   const value = 'value'
-  const body = badger([`Test: ${value}`])
+  const body = new BodyBuilder('').withBadgerLines([`Test: ${value}`]).build()
   const context = makeContext({ body })
   const resolver = descriptionResolver(context)
 
@@ -48,7 +31,7 @@ it('should return value from badger section of PR description', () => {
 
 it('should ignore whitespace', () => {
   const value = 'value'
-  const body = badger([`Test:${value}     `])
+  const body = new BodyBuilder('').withBadgerLines([`Test:${value}      `]).build()
   const context = makeContext({ body })
   const resolver = descriptionResolver(context)
 

@@ -1,9 +1,8 @@
 import { getInput } from '@actions/core'
 import { getBadgeConfigs } from './actions'
+import { mockify } from './testUtil'
 
 jest.mock('@actions/core')
-
-const mockify = (fn: Function) => fn as jest.Mock
 
 const makeInputs = (start: number = 1, end: number = 10) => {
   const inputs: Record<string, string> = {}

@@ -20,10 +20,10 @@ export const makeContext = ({
   eventName = Event.PULL_REQUEST,
   action = PullRequestAction.OPENED,
   body = '',
-  branch = 'test',
+  branch = 'test-branch',
   prNumber = 1,
-  additions = 250,
-  deletions = 25
+  additions = 10,
+  deletions = 5
 }: Partial<ContextConfig> = {}) => ({
   eventName,
   payload: {
