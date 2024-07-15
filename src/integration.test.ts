@@ -1,53 +1,47 @@
-import Resolver from "./Resolver"
-import Badge from "./util/badge"
-import { SHIELDS_IO_ENDPOINT } from "./util/shields"
+import PullRequestHelper from './util/github/PullRequestHelper'
+import { IntegrationTestBuilder } from './util/testUtil'
 
-const body = `
-This is some prelude text which should be ignored...
+jest.mock('@actions/core')
+jest.mock('@actions/github')
 
----
-## 🦡 Badger
-This section will be removed and replaced with generated badges after you save. The fields
-below are required by some of the badges, fill them in if you would like the badges to be
-added. ***Note: It may take a few minutes after saving before this section is replaced.***
+const EXPECTED_DESCRIPTION = `This prefix has been added by Badger
 
-Trello Card: My Trello Card
-Trello URL: https://trello.com/test-feature
----
+<!-- Start of Badger Additions -->
+[![Website: test-branch.dev.example.com](https://img.shields.io/static/v1?label=Website&message=test-branch.dev.example.com)](https://test-branch.dev.example.com) [![Trello: My Example Card](https://img.shields.io/static/v1?label=Trello&message=My%20Example%20Card)](https://trello.com/aoihioachw7e38)
+<!-- End of Badger Additions -->
 
-This is some trailing text which, again, should be ignored.
-`.replace('\n', '\r\n')
+This is an example PR description
 
-const context: any = {
-  payload: {
-    pull_request: {
-      additions: 172,
-      deletions: 75,
-      number: 12,
-      body,
-      head: {
-        ref: 'test-feature'
-      }
-    }
-  }
-}
+This suffix has been added by Badger`
 
-it('should generate badges', () => {
-  const resolver = new Resolver(context)
-
-  const inputs = [
-    'Website: {{branch}}.gleanweb.sonocent.dev (link=https://{{branch}}.gleanweb.sonocent.dev)(logo=google-chrome)(colour=white)',
-    'Trello: {{trello.card}} (link={{trello.url}})(logo=trello)',
-    'Empty: Yup'
-  ]
-
-  const resolved = inputs.map(input => resolver.resolve(input))
-  const badges = resolved.map(input => Badge.fromString(input))
-  const markdown = badges.map(badge => badge.toMarkdown())
-
-  const domain = 'test-feature.gleanweb.sonocent.dev'
-
-  expect(markdown[0]).toEqual(`[![Website: ${domain}](${SHIELDS_IO_ENDPOINT}?label=Website&message=${domain}&logo=google-chrome&color=white)](https://${domain})`)
-  expect(markdown[1]).toEqual(`[![Trello: My Trello Card](${SHIELDS_IO_ENDPOINT}?label=Trello&message=My%20Trello%20Card&logo=trello)](https://trello.com/test-feature)`)
-  expect(markdown[2]).toEqual(`![Empty: Yup](${SHIELDS_IO_ENDPOINT}?label=Empty&message=Yup)`)
+beforeEach(() => {
+  process.env = {}
 })
+
+it('should listen for opened pull requests', () => 
+  new IntegrationTestBuilder()
+    .withBranch('test-branch')
+    .withBody('This is an example PR description', builder =>
+      builder.withBadgerLines([
+        'Trello Card: My Example Card',
+        'Trello URL:https://trello.com/aoihioachw7e38'
+      ])
+    )
+    .withInputs({
+      prefix: 'This prefix has been added by Badger',
+      suffix: 'This suffix has been added by Badger',
+      'badge-01': 'Website: {{branch}}.{{BASE_DOMAIN}} (link=https://{{branch}}.{{BASE_DOMAIN}})',
+      'badge-02': 'Trello: {{trello.card}} (link={{trello.url}})'
+    })
+    .withEnvironmentVariables({
+      BASE_DOMAIN: 'dev.example.com',
+      TRELLO_CARD: 'Untitled Card'
+    })
+    .forOpenedPullRequest((helper: PullRequestHelper, run: () => void) => {
+      helper.setPRDescription = jest.fn()
+    
+      run()
+
+      expect(helper.setPRDescription).toHaveBeenCalledWith(EXPECTED_DESCRIPTION)
+    })
+)

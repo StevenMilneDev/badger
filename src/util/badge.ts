@@ -63,7 +63,7 @@ export default class Badge {
       options += `(colour=${this.options.colour})`
     }
 
-    return `${this.name}: ${this.value} ${options}`
+    return `${this.name}: ${this.value} ${options}`.trim()
   }
 
   public toMarkdown() {
