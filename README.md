@@ -131,6 +131,23 @@ To compile the action run the `npm run build` command.
 ### Testing
 This project contains unit tests written with [Jest](https://jestjs.io/). You can run the unit tests with the `npm test` command.
 
+#### Manual Testing
+To test Badger manually, ask for an invite to the testing repository [StevenMilneDev/badger-test](https://github.com/StevenMilneDev/badger-test). Once in the repo, change the `.github/workflows/pull_request.yml` file to point to your branch;
+
+```yml
+jobs:
+  pr-description:
+    steps:
+    - name: Add Badges
+      uses: StevenMilneDev/badger@<BRANCH_NAME_HERE>
+```
+
+Use this link; [Edit pull_request.yml](https://github.com/StevenMilneDev/badger-test/edit/master/.github/workflows/pull_request.yml) to edit the file and commit directly to the main branch. Replace `<BRANCH_NAME_HERE>` with your branch name so the value looks like; `StevenMilneDev/badger@npm-package-update`.
+
+Once the repo is pointing at your branch, create a PR by editing the `README.md` file by clicking this link; [Edit README.md](https://github.com/StevenMilneDev/badger-test/edit/master/README.md). This time instead of commiting directly to the main branch, select "Create a new branch for this commit...". Once the branch is created it will show a PR screen, raise the PR and wait for Badger to kick in.
+
+If things go wrong and badges aren't added to your PR then you can check the [Actions tab](https://github.com/StevenMilneDev/badger-test/actions) to see the logs for the actions run.
+
 ## License
 This is free and unencumbered software released into the public domain.
 
