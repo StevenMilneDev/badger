@@ -41,5 +41,5 @@ inputs:
     description: 'Configuration for a badge'
     required: false
 runs:
-  using: 'node12'
+  using: 'node20'
   main: 'bin/index.js'
