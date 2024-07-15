@@ -7,7 +7,7 @@ export default class PullRequestHelper extends GitHubHelper {
 
   public async setPRDescription(body: string) {
     await this.withErrorHandling(async () => {
-      await this.octokit.pulls.update({
+      await this.octokit.rest.pulls.update({
         ...this.context.repo,
         pull_number: this.context.payload.pull_request.number,
         body
