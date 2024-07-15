@@ -42,6 +42,13 @@ describe('Description', () => {
     expect(helper.getPRDescripition()).toBe(body)
   })
 
+  it('should return empty string when description is empty', () => {
+    const context = makeContext({ body: null })
+    const helper = new PullRequestHelper(context, makeOctokit())
+
+    expect(helper.getPRDescripition()).toBe('')
+  })
+
   it('should set the description', async () => {
     const context = makeContext()
     const octokit = makeOctokit()

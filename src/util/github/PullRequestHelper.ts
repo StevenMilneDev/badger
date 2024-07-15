@@ -2,7 +2,7 @@ import GitHubHelper from "./GitHubHelper";
 
 export default class PullRequestHelper extends GitHubHelper {
   public getPRDescripition() {
-    return this.context.payload.pull_request.body
+    return this.context.payload.pull_request.body ?? ''
   }
 
   public async setPRDescription(body: string) {
