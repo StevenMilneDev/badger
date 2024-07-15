@@ -1,4 +1,4 @@
-import Github from './Github'
+import Github from './github'
 import { getInput } from '@actions/core'
 import { Event, PullRequestAction } from './github/events'
 import { ActionNotSupportedError, EventNotSupportedError, InvalidTokenError } from './github/errors'

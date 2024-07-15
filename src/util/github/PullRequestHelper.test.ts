@@ -1,6 +1,6 @@
 import { setFailed } from "@actions/core"
 import { Context } from "@actions/github/lib/context"
-import { Octokit } from "../Github"
+import { Octokit } from "../github"
 import PullRequestHelper from "./PullRequestHelper"
 
 jest.mock("@actions/core")
@@ -26,8 +26,10 @@ const makeContext = ({ body = '', number = 1, owner = 'StevenMilneDev', repo = '
 } as Context)
 
 const makeOctokit = (update: () => void = jest.fn()) => ({
-  pulls: {
-    update
+  rest: {
+    pulls: {
+      update
+    }
   }
 } as Octokit)
 
@@ -48,7 +50,7 @@ describe('Description', () => {
     const body = 'Something else'
     await helper.setPRDescription(body)
 
-    expect(octokit.pulls.update).toHaveBeenCalledWith(expect.objectContaining({ body }))
+    expect(octokit.rest.pulls.update).toHaveBeenCalledWith(expect.objectContaining({ body }))
   })
 
   it('should fail the run if setting the description fails', async () => {

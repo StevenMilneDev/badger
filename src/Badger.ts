@@ -1,11 +1,10 @@
 import { warning, info } from '@actions/core'
 import Cache from "./util/Cache";
-import _ from 'lodash'
 import { replaceAll } from "./util/string";
 import Badge from "./util/badge";
 
 export const findReferences = (source: string) => 
-  _.uniq(source.match(/{{.+?}}/g)).map(variable => variable.match(/{{(.+?)}}/)[1])
+Array.from(new Set(source.match(/{{.+?}}/g))).map(variable => variable.match(/{{(.+?)}}/)[1])
 
 export default class Badger {
   constructor(private variables: Cache<string>) {}
@@ -58,7 +57,7 @@ export default class Badger {
 
           badges.push(badge)
         } catch(error) {
-          warning(`Skipping badge-${_.padStart(index.toString(), 2, '0')}: ${error.message}`)
+          warning(`Skipping badge-${index.toString().padStart(2, '0')}: ${error.message}`)
         }
       }
     }
