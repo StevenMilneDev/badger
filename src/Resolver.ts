@@ -1,6 +1,5 @@
 import { warning } from '@actions/core'
 import { Context } from '@actions/github/lib/context'
-import _ from 'lodash'
 import { replaceAll, asEnvironmentVariableName } from './util/string'
 import { findReferences } from './util/variables'
 
