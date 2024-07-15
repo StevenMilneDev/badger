@@ -3,7 +3,6 @@ import { getOctokit, context } from '@actions/github'
 import { Context } from '@actions/github/lib/context'
 import * as github from './util/github'
 import Badge from './util/badge'
-import _ from 'lodash'
 import Resolver from './Resolver'
 
 const token = getInput('token')
