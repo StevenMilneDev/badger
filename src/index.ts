@@ -34,7 +34,7 @@ async function updatePR(context: Context, body: string) {
     // TODO -- Set baseUrl option for compatibility with enterprise
     const octokit = getOctokit(token)
 
-    await octokit.pulls.update({
+    await octokit.rest.pulls.update({
       ...context.repo,
       pull_number: context.payload.pull_request.number,
       body
