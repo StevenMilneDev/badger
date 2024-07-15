@@ -1,6 +1,6 @@
 import { context } from '@actions/github'
 import { setup } from './app'
-import Github from './util/github'
+import Github from './util/GithubA'
 import { ActionNotSupportedError, EventNotSupportedError } from './util/github/errors'
 import { warning, error } from '@actions/core'
 

@@ -1,6 +1,6 @@
 import { setFailed } from "@actions/core"
 import { Context } from "@actions/github/lib/context"
-import { Octokit } from "../github"
+import { Octokit } from "../GithubA"
 import PullRequestHelper from "./PullRequestHelper"
 
 jest.mock("@actions/core")

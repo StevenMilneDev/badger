@@ -1,6 +1,6 @@
 import { getInput, info } from '@actions/core'
 import { Context } from '@actions/github/lib/context'
-import Github, { Octokit } from './util/github'
+import Github, { Octokit } from './util/GithubA'
 import Cache, { chainedResolver } from './util/Cache'
 import contextResolver from './resolvers/contextResolver'
 import descriptionResolver from './resolvers/descriptionResolver'

@@ -4,7 +4,7 @@ import { replaceAll } from "./util/string";
 import Badge from "./util/badge";
 
 export const findReferences = (source: string) => 
-Array.from(new Set(source.match(/{{.+?}}/g))).map(variable => variable.match(/{{(.+?)}}/)[1])
+  Array.from(new Set(source.match(/{{.+?}}/g))).map(variable => variable.match(/{{(.+?)}}/)[1])
 
 export default class Badger {
   constructor(private variables: Cache<string>) {}
