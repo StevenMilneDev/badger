@@ -21,7 +21,7 @@ export type ActionHandlers = Partial<Record<string, Array<EventHandler>>>
 
 export type Octokit = InstanceType<typeof GitHub>
 
-export default class Github {
+export default class GithubActions {
   private readonly token: string
   private handlers: Partial<Record<Event, ActionHandlers>>
 
@@ -57,11 +57,11 @@ export default class Github {
     }
   }
 
-  public onPullRequest(action: PullRequestAction, handler: EventHandler): Github {
+  public onPullRequest(action: PullRequestAction, handler: EventHandler): GithubActions {
     return this.addEventHandler(Event.PULL_REQUEST, action, handler)
   }
 
-  public addEventHandler(event: Event, action: string, handler: EventHandler): Github {
+  public addEventHandler(event: Event, action: string, handler: EventHandler): GithubActions {
     if (!this.handlers[event]) {
       this.handlers[event] = {}
     }

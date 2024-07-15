@@ -1,6 +1,6 @@
 import { setFailed } from "@actions/core"
 import { Context } from "@actions/github/lib/context"
-import { Octokit } from "../Github"
+import { Octokit } from "../GithubActions"
 
 export default class GitHubHelper {
   protected readonly context: Context

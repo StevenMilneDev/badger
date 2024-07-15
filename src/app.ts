@@ -1,6 +1,6 @@
 import { getInput, info } from '@actions/core'
 import { Context } from '@actions/github/lib/context'
-import Github, { Octokit } from './util/Github'
+import GithubActions, { Octokit } from './util/GithubActions'
 import Cache, { chainedResolver } from './util/Cache'
 import contextResolver from './resolvers/contextResolver'
 import descriptionResolver from './resolvers/descriptionResolver'
@@ -22,7 +22,7 @@ import { getBadgeConfigs } from './util/actions'
   environmentResolver,            // Resolve variables from environment variables
 ]))
 
-export const setup = (github: Github) => {
+export const setup = (github: GithubActions) => {
   github.onPullRequest(PullRequestAction.OPENED, (context: Context, octokit: Octokit, helper: PullRequestHelper) => {
     const body = helper.getPRDescripition()
     const badger = new Badger(makeCache(context))

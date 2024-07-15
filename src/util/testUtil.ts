@@ -2,7 +2,7 @@ import PullRequestHelper from './github/PullRequestHelper'
 import { Event, PullRequestAction } from './github/events'
 import { getInput } from '@actions/core'
 import { setup } from '../app'
-import Github from './Github'
+import GithubActions from './GithubActions'
 
 export interface ContextConfig {
   eventName: string
@@ -45,7 +45,7 @@ export const setupEnvironment = (context: any, inputs: Record<string, string>) =
     return inputs[name]
   })
 
-  const github = new Github()
+  const github = new GithubActions()
 
   github.onPullRequest = jest.fn()
 

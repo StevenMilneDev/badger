@@ -1,15 +1,15 @@
 import { context } from '@actions/github'
 import { setup } from './app'
-import Github from './util/Github'
+import GithubActions from './util/GithubActions'
 import { ActionNotSupportedError, EventNotSupportedError } from './util/github/errors'
 import { warning, error } from '@actions/core'
 
-const github = new Github()
+const actions = new GithubActions()
 
-setup(github)
+setup(actions)
 
 try {
-  github.handle(context)
+  actions.handle(context)
 } catch(e) {
   if (e instanceof EventNotSupportedError) {
     error(`Badger does not support '${e.event}' actions`)
