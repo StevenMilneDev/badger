@@ -6,6 +6,12 @@ import Cache, { objectResolver } from "./util/Cache"
 jest.mock('@actions/core')
 
 const EMPTY_CACHE = new Cache<string>(() => undefined)
+const TEST_BODY = `
+---
+## 🦡 Badger
+---
+
+This is a test body!`
 
 beforeEach(() => {
   jest.clearAllMocks()
@@ -202,5 +208,57 @@ describe('To Markdown', () => {
     const expected = `${badges[0].toMarkdown()} ${badges[1].toMarkdown()}`
 
     expect(result).toContain(expected)
+  })
+})
+
+describe('Apply', () => {
+  it('should prefix the content', () => {
+    const badger = new Badger(EMPTY_CACHE)
+    const body = 'This is body text'
+    const prefix = 'I am a prefix!'
+
+    const result = badger.apply(body, [], prefix)
+    expect(result).toBe(`${prefix}\n\n${body}`)
+  })
+
+  it('should replace badger section with badges', () => {
+    const badger = new Badger(EMPTY_CACHE)
+    const badges = ['Test Badge: Value 1']
+    
+    const result = badger.apply(TEST_BODY, badges)
+    expect(result).toEqual(`
+<!-- Start of Badger Additions -->
+![Test Badge: Value 1](https://img.shields.io/static/v1?label=Test%20Badge&message=Value%201)
+<!-- End of Badger Additions -->
+
+This is a test body!`)
+  })
+
+  it('should suffix the content', () => {
+    const badger = new Badger(EMPTY_CACHE)
+    const body = 'This is body text'
+    const suffix = 'I am a suffix!'
+
+    const result = badger.apply(body, [], undefined, suffix)
+    expect(result).toBe(`${body}\n\n${suffix}`)
+  })
+
+  it('should apply all transformations to the content', () => {
+    const badger = new Badger(EMPTY_CACHE)
+    const badges = ['Test Badge: Value 1']
+    const prefix = 'I am a prefix!'
+    const suffix = 'I am a suffix!'
+
+    const result = badger.apply(TEST_BODY, badges, prefix, suffix)
+    expect(result).toEqual(`I am a prefix!
+
+
+<!-- Start of Badger Additions -->
+![Test Badge: Value 1](https://img.shields.io/static/v1?label=Test%20Badge&message=Value%201)
+<!-- End of Badger Additions -->
+
+This is a test body!
+
+I am a suffix!`)
   })
 })

@@ -28,15 +28,9 @@ export const setup = (github: GithubActions) => {
     const badger = new Badger(makeCache(context))
   
     info('Generating badges...')
-    const badges = badger.badges(getBadgeConfigs())
-    const markdown = badger.toMarkdown(badges)
-  
-    let updatedBody = body.replace(/\r/g, '').replace(/(---\r?\n## 🦡 Badger\n([\s\S]+)?---)/, markdown)
-    
-    updatedBody = badger.applyPrefix(updatedBody, getInput('prefix'))
-    updatedBody = badger.applySuffix(updatedBody, getInput('suffix'))
+    const updated = badger.apply(body, getBadgeConfigs(), getInput('prefix'), getInput('suffix'))
   
     info('Updating PR description...')
-    helper.setPRDescription(updatedBody)
+    helper.setPRDescription(updated)
   })
 }
