@@ -2,7 +2,7 @@ import PullRequestHelper from './github/PullRequestHelper'
 import { Event, PullRequestAction } from './github/events'
 import { getInput } from '@actions/core'
 import { setup } from '../app'
-import Github from './GithubA'
+import Github from './Github'
 
 export interface ContextConfig {
   eventName: string
