@@ -1,6 +1,6 @@
 {
   "name": "badger",
-  "version": "1.0.6",
+  "version": "1.0.7",
   "description": "A GitHub action to add customised badges to pull requests.",
   "main": "index.js",
   "scripts": {

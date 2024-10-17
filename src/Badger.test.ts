@@ -261,4 +261,28 @@ This is a test body!
 
 I am a suffix!`)
   })
+
+  it('should not consume any comments in the body', () => {
+    const badger = new Badger(EMPTY_CACHE)
+    const body = `
+---
+## 🦡 Badger
+---
+
+<!---
+This is a comment in the body
+-->
+This is a test body!`
+
+    const result = badger.apply(body, undefined)
+    expect(result).toEqual(`
+<!-- Start of Badger Additions -->
+
+<!-- End of Badger Additions -->
+
+<!---
+This is a comment in the body
+-->
+This is a test body!`)
+  })
 })
