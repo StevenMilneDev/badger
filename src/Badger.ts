@@ -15,7 +15,7 @@ export default class Badger {
    */
   public apply(body: string, badges: string[] = [], prefix?: string, suffix?: string): string {
     const markdown = this.toMarkdown(this.badges(badges))
-    let updated = body.replace(/\r/g, '').replace(/(---\r?\n## 🦡 Badger\n([\s\S]+)?---)/, markdown)
+    let updated = body.replace(/\r/g, '').replace(/(---\r?\n## 🦡 Badger\n([\s\S]*?)---)/, markdown)
 
     updated = this.applyPrefix(updated, prefix)
     updated = this.applySuffix(updated, suffix)
