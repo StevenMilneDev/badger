@@ -40,6 +40,21 @@ inputs:
   badge-10:
     description: 'Configuration for a badge'
     required: false
+  badge-11:
+    description: 'Configuration for a badge'
+    required: false
+  badge-12:
+    description: 'Configuration for a badge'
+    required: false
+  badge-13:
+    description: 'Configuration for a badge'
+    required: false
+  badge-14:
+    description: 'Configuration for a badge'
+    required: false
+  badge-15:
+    description: 'Configuration for a badge'
+    required: false
 runs:
   using: 'node20'
   main: 'bin/index.js'

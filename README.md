@@ -79,6 +79,11 @@ The following input variables are supported;
 | `badge-08` |          | Configuration for the eighth badge.                                 |
 | `badge-09` |          | Configuration for the nineth badge.                                 |
 | `badge-10` |          | Configuration for the tenth badge.                                  |
+| `badge-11` |          | Configuration for the eleventh badge.                               |
+| `badge-12` |          | Configuration for the twelfth badge.                                |
+| `badge-13` |          | Configuration for the thirteenth badge.                             |
+| `badge-14` |          | Configuration for the fourteenth badge.                             |
+| `badge-15` |          | Configuration for the fifteenth badge.                              |
 
 Badger does not support any output variables.
 
